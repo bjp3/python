@@ -18,20 +18,22 @@ class Television:
 
     def mute(self):
         """Method to mute or unmute TV."""
-        self.__prev_volume = self.__volume  #  Saves current volume
-        if self.__status:  #  Checks to see if the TV is on
+          # Saves current volume
+        if self.__status and not self.__muted:  #  Checks to see if the TV is on
             self.__muted = True  #  Sets TV to mute
             self.__volume = Television.MIN_VOLUME  #  Sets volume to 0
-        else:
-            self.__volume = self.__prev_volume  #  Restores the previous volume
-            self.__muted = False  # Sets muted state back to False
-
+        elif self.__status and self.__muted:
+            self.__muted = False
+            self.__volume = self.__prev_volume
+        elif not self.__status:
+            return None
     def channel_up(self):
         """Method to increase channel"""
         if self.__status:  #  Checks to see if the TV is on
-            if self.__channel > self.MAX_CHANNEL:  # Checks to see if the channel is greater than 3
-                self.__channel = self.MIN_CHANNEL  #  Sets channel to 0
-            self.__channel += 1  # increases channel by 1
+            if self.__channel < self.MAX_CHANNEL:  # Checks to see if the channel is greater than 3
+                self.__channel += 1  # increases channel by 1
+            else:
+                self.__channel = Television.MIN_CHANNEL
 
     def channel_down(self):
         """Method to decrease channel"""
@@ -48,6 +50,7 @@ class Television:
                 self.__volume += 1  # increases volume by 1
         elif self.__status and self.__muted:  #  Checks to see if TV is on and if it's on mute
             self.__volume = self.__prev_volume + 1
+        self.__prev_volume = self.__volume
 
     def volume_down(self):
         """Method to decrease volume"""
@@ -56,7 +59,8 @@ class Television:
                 self.__volume -= 1  # decreases volume by 1
         elif self.__status and self.__muted:#  Checks to see if TV is on and if it's on mute
             self.__volume = self.__prev_volume - 1  # decreases volume by 1
+        self.__prev_volume = self.__volume
 
     def __str__(self):
         """Prints the output when a print is called"""
-            return f'Power = {self.__status}, Channel = {self.__channel}, Volume = {self.__volume}'
+        return f'Power = {self.__status}, Channel = {self.__channel}, Volume = {self.__volume}'
